@@ -15,24 +15,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TransportationController implements TransportationApi {
   private final TransportationService transportationService;
-  private final TransportationMapper transportationMapper;
 
-  public TransportationController(TransportationService transportationService,
-                                  TransportationMapper transportationMapper) {
+  public TransportationController(TransportationService transportationService) {
     this.transportationService = transportationService;
-    this.transportationMapper = transportationMapper;
   }
 
   @Override
   public TransportationResponse create(TransportationCreateRequest request) {
     Transportation transportation = transportationService.create(request);
-    return transportationMapper.toResponse(transportation);
+    return TransportationMapper.INSTANCE.toResponse(transportation);
   }
 
   @Override
   public TransportationResponse update(Long id, TransportationUpdateRequest request) {
     Transportation updated = transportationService.update(id, request);
-    return transportationMapper.toResponse(updated);
+    return TransportationMapper.INSTANCE.toResponse(updated);
   }
 
   @Override
@@ -43,13 +40,13 @@ public class TransportationController implements TransportationApi {
   @Override
   public TransportationResponse getById(Long id) {
     Transportation transportation = transportationService.getById(id);
-    return transportationMapper.toResponse(transportation);
+    return TransportationMapper.INSTANCE.toResponse(transportation);
   }
 
   @Override
   public List<TransportationResponse> getAll() {
     List<Transportation> all = transportationService.findAll();
-    return transportationMapper.toResponseList(all);
+    return TransportationMapper.INSTANCE.toResponseList(all);
   }
 }
 
