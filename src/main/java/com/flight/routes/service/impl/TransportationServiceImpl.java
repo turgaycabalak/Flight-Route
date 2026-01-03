@@ -5,8 +5,10 @@ import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
 import com.flight.routes.domain.entity.Transportation;
+import com.flight.routes.domain.enums.TransportationTypeEnum;
 import com.flight.routes.dto.transportation.TransportationCreateRequest;
 import com.flight.routes.dto.transportation.TransportationUpdateRequest;
+import com.flight.routes.exception.BusinessException;
 import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
@@ -29,16 +31,27 @@ public class TransportationServiceImpl implements TransportationService {
   @Override
   @Transactional
   public Transportation create(TransportationCreateRequest request) {
-    // todo: structuredScope vm
-    Location origin = locationService.getById(request.originLocationId());
-    Location destination = locationService.getById(request.destinationLocationId());
+    Long originId = request.originLocationId();
+    Long destinationId = request.destinationLocationId();
+    TransportationTypeEnum transportationTypeEnum = request.transportationType();
 
-    Transportation transportation = new Transportation(origin, destination, request.transportationType());
+    // todo: structuredScope vm
+    Location origin = locationService.getById(originId);
+    Location destination = locationService.getById(destinationId);
+
+    boolean exists = transportationRepository.existsBy(originId, destinationId, transportationTypeEnum);
+    if (exists) {
+      throw new BusinessException("error.transportation.exists",
+          origin.getName(), destination.getName(), transportationTypeEnum);
+    }
+
+    Transportation transportation = new Transportation(origin, destination, transportationTypeEnum);
 
     if (request.operatingDays() != null) {
       transportation.getOperatingDays().addAll(request.operatingDays());
     }
 
+    // todo: race condition! maybe try-catch block?
     return transportationRepository.save(transportation);
   }
 
@@ -47,10 +60,20 @@ public class TransportationServiceImpl implements TransportationService {
   public Transportation update(Long id, TransportationUpdateRequest updateRequest) {
     Transportation transportation = getById(id);
 
-    transportation.setTransportationType(updateRequest.transportationType());
+    TransportationTypeEnum newType = updateRequest.transportationType();
 
-    transportation.getOperatingDays().clear();
+    boolean exists = transportationRepository.existsByOriginAndDestinationAndTransportationTypeAndIdNot(
+        transportation.getOrigin(), transportation.getDestination(), newType, id);
+
+    if (exists) {
+      throw new BusinessException("error.transportation.exists",
+          transportation.getOrigin().getName(), transportation.getDestination().getName(), newType);
+    }
+
+    transportation.setTransportationType(newType);
+
     if (updateRequest.operatingDays() != null) {
+      transportation.getOperatingDays().clear();
       transportation.getOperatingDays().addAll(updateRequest.operatingDays());
     }
 

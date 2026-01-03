@@ -24,21 +24,37 @@ public class GlobalExceptionHandler {
 
 
   @ExceptionHandler(NotFoundException.class)
-  public ResponseEntity<ApiErrorResponse> handleNotFoundException(NotFoundException ex, HttpServletRequest request,
+  public ResponseEntity<ApiErrorResponse> handleNotFoundException(NotFoundException ex,
+                                                                  HttpServletRequest request,
                                                                   Locale locale) {
-    String message = messageSource.getMessage(ex.getMessageKey(), ex.getArgs(), locale);
-    HttpStatus notFound = HttpStatus.NOT_FOUND;
+    return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessageKey(), ex.getArgs(), request, locale);
+  }
+
+  @ExceptionHandler(BusinessException.class)
+  public ResponseEntity<ApiErrorResponse> handleBusinessException(BusinessException ex,
+                                                                  HttpServletRequest request,
+                                                                  Locale locale) {
+    return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessageKey(), ex.getArgs(), request, locale);
+  }
+
+  private ResponseEntity<ApiErrorResponse> buildErrorResponse(HttpStatus status,
+                                                              String messageKey,
+                                                              Object[] args,
+                                                              HttpServletRequest request,
+                                                              Locale locale) {
+    String message = messageSource.getMessage(messageKey, args, locale);
 
     ApiErrorResponse response = new ApiErrorResponse(
         LocalDateTime.now(),
-        notFound.value(),
-        notFound.getReasonPhrase(),
+        status.value(),
+        status.getReasonPhrase(),
         message,
         request.getRequestURI()
     );
 
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    return ResponseEntity.status(status).body(response);
   }
+
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ApiErrorResponse> handleValidation(MethodArgumentNotValidException ex,

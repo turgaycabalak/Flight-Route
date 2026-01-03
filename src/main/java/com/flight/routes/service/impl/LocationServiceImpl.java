@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
 import com.flight.routes.dto.location.LocationOperationRequest;
+import com.flight.routes.exception.BusinessException;
 import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.LocationRepository;
 import com.flight.routes.service.LocationService;
@@ -24,6 +25,11 @@ public class LocationServiceImpl implements LocationService {
   @Override
   @Transactional
   public Location create(Location location) {
+    String locationCode = location.getLocationCode();
+    boolean exists = locationRepository.existsByLocationCode(locationCode);
+    if (exists) {
+      throw new BusinessException("error.location.code_exists", locationCode);
+    }
     return locationRepository.save(location);
   }
 
