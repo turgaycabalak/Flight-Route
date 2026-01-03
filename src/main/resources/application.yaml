@@ -6,9 +6,6 @@ spring:
     name: flight-route-service
   banner:
     location: banners/banner.txt
-  messages:
-    basename: validation-messages
-    encoding: UTF-8
 
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres

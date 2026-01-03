@@ -7,6 +7,7 @@ import com.flight.routes.domain.entity.Location;
 import com.flight.routes.domain.entity.Transportation;
 import com.flight.routes.dto.transportation.TransportationCreateRequest;
 import com.flight.routes.dto.transportation.TransportationUpdateRequest;
+import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
 import com.flight.routes.service.TransportationService;
@@ -73,9 +74,7 @@ public class TransportationServiceImpl implements TransportationService {
   @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
   public Transportation getById(Long id) {
     return transportationRepository.findById(id)
-        // todo: throw exception
-        // todo: multi language
-        .orElseThrow(() -> new IllegalArgumentException("Transportation not found with id: " + id));
+        .orElseThrow(() -> new NotFoundException("error.transportation.not_found", id));
   }
 
   @Override

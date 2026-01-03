@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
 import com.flight.routes.dto.location.LocationOperationRequest;
+import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.LocationRepository;
 import com.flight.routes.service.LocationService;
 
@@ -56,9 +57,7 @@ public class LocationServiceImpl implements LocationService {
   @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
   public Location getById(Long id) {
     return findById(id)
-        // todo: throw exception
-        // todo: multi language
-        .orElseThrow(() -> new IllegalArgumentException("Location not found with id: " + id));
+        .orElseThrow(() -> new NotFoundException("error.location.not_found", id));
   }
 
   @Override
