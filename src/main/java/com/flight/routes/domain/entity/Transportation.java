@@ -21,6 +21,8 @@ import jakarta.persistence.UniqueConstraint;
 
 import com.flight.routes.domain.enums.TransportationTypeEnum;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 @Entity
 @Table(
     name = "transportations",
@@ -92,8 +94,7 @@ public class Transportation {
   }
 
   public boolean operatesOn(int dayOfWeek) {
-    return operatingDays == null || operatingDays.isEmpty()
-        || operatingDays.contains(dayOfWeek);
+    return ObjectUtils.isEmpty(operatingDays) || operatingDays.contains(dayOfWeek);
   }
 
   public Long getId() {
