@@ -1,11 +1,13 @@
 package com.flight.routes.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Transportation;
 import com.flight.routes.dto.transportation.TransportationCreateRequest;
 import com.flight.routes.dto.transportation.TransportationUpdateRequest;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TransportationService {
 
@@ -19,5 +21,5 @@ public interface TransportationService {
 
   Transportation getById(Long id);
 
-  List<Transportation> findAll();
+  Page<Transportation> findAll(Pageable pageable);
 }

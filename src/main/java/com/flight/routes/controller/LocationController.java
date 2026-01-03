@@ -1,7 +1,5 @@
 package com.flight.routes.controller;
 
-import java.util.List;
-
 import com.flight.routes.controller.api.LocationApi;
 import com.flight.routes.domain.entity.Location;
 import com.flight.routes.dto.location.LocationOperationRequest;
@@ -9,6 +7,8 @@ import com.flight.routes.dto.location.LocationResponse;
 import com.flight.routes.mapper.LocationMapper;
 import com.flight.routes.service.LocationService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -49,8 +49,8 @@ public class LocationController implements LocationApi {
   }
 
   @Override
-  public List<LocationResponse> getAll() {
-    List<Location> all = locationService.findAll();
-    return LocationMapper.INSTANCE.toResponseList(all);
+  public Page<LocationResponse> getAll(Pageable pageable) {
+    Page<Location> page = locationService.findAll(pageable);
+    return page.map(LocationMapper.INSTANCE::toResponse);
   }
 }

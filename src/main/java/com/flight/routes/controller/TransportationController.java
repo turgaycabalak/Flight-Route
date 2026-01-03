@@ -1,7 +1,5 @@
 package com.flight.routes.controller;
 
-import java.util.List;
-
 import com.flight.routes.controller.api.TransportationApi;
 import com.flight.routes.domain.entity.Transportation;
 import com.flight.routes.dto.transportation.TransportationCreateRequest;
@@ -10,6 +8,8 @@ import com.flight.routes.dto.transportation.TransportationUpdateRequest;
 import com.flight.routes.mapper.TransportationMapper;
 import com.flight.routes.service.TransportationService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,9 +44,9 @@ public class TransportationController implements TransportationApi {
   }
 
   @Override
-  public List<TransportationResponse> getAll() {
-    List<Transportation> all = transportationService.findAll();
-    return TransportationMapper.INSTANCE.toResponseList(all);
+  public Page<TransportationResponse> getAll(Pageable pageable) {
+    Page<Transportation> page = transportationService.findAll(pageable);
+    return page.map(TransportationMapper.INSTANCE::toResponse);
   }
 }
 

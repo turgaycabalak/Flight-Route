@@ -1,6 +1,5 @@
 package com.flight.routes.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
@@ -10,6 +9,8 @@ import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.LocationRepository;
 import com.flight.routes.service.LocationService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,8 +69,7 @@ public class LocationServiceImpl implements LocationService {
 
   @Override
   @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-  public List<Location> findAll() {
-    // todo: pageable
-    return locationRepository.findAll();
+  public Page<Location> findAll(Pageable pageable) {
+    return locationRepository.findAll(pageable);
   }
 }

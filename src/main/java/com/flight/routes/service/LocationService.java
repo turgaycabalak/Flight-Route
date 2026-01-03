@@ -1,10 +1,12 @@
 package com.flight.routes.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
 import com.flight.routes.dto.location.LocationOperationRequest;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface LocationService {
   Location create(Location location);
@@ -17,5 +19,5 @@ public interface LocationService {
 
   Location getById(Long id);
 
-  List<Location> findAll();
+  Page<Location> findAll(Pageable pageable);
 }

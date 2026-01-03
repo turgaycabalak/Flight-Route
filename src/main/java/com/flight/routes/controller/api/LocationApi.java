@@ -1,7 +1,5 @@
 package com.flight.routes.controller.api;
 
-import java.util.List;
-
 import jakarta.validation.Valid;
 
 import com.flight.routes.dto.location.LocationOperationRequest;
@@ -11,6 +9,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +56,8 @@ public interface LocationApi {
       description = "Locations found successfully"
   )
   @GetMapping
-  List<LocationResponse> getAll();
+  Page<LocationResponse> getAll(
+      @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable);
 
   @Operation(summary = "Delete location")
   @ApiResponse(

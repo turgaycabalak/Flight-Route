@@ -1,6 +1,5 @@
 package com.flight.routes.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
@@ -14,6 +13,8 @@ import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
 import com.flight.routes.service.TransportationService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,8 +103,7 @@ public class TransportationServiceImpl implements TransportationService {
 
   @Override
   @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
-  public List<Transportation> findAll() {
-    // todo: pageable
-    return transportationRepository.findAll();
+  public Page<Transportation> findAll(Pageable pageable) {
+    return transportationRepository.findAll(pageable);
   }
 }
