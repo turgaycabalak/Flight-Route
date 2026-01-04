@@ -24,3 +24,9 @@ spring:
           create_namespaces: true
         format_sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  cache:
+    type: caffeine
+    cache-names: routes
+    caffeine:
+      spec: expireAfterWrite=10m,maximumSize=500

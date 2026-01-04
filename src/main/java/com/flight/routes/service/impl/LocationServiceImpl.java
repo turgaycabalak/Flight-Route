@@ -9,6 +9,7 @@ import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.LocationRepository;
 import com.flight.routes.service.LocationService;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class LocationServiceImpl implements LocationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public Location create(Location location) {
     String locationCode = location.getLocationCode();
     boolean exists = locationRepository.existsByLocationCode(locationCode);
@@ -36,6 +38,7 @@ public class LocationServiceImpl implements LocationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public Location update(Long id, LocationOperationRequest updateRequest) {
     Location location = getById(id);
 
@@ -49,6 +52,7 @@ public class LocationServiceImpl implements LocationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public void delete(Long id) {
     // todo: soft-delete
     locationRepository.deleteById(id);

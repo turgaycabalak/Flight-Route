@@ -14,6 +14,7 @@ import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
 import com.flight.routes.service.TransportationService;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class TransportationServiceImpl implements TransportationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public Transportation create(TransportationCreateRequest request) {
     Long originId = request.originLocationId();
     Long destinationId = request.destinationLocationId();
@@ -59,6 +61,7 @@ public class TransportationServiceImpl implements TransportationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public Transportation update(Long id, TransportationUpdateRequest updateRequest) {
     Transportation transportation = getById(id);
 
@@ -84,6 +87,7 @@ public class TransportationServiceImpl implements TransportationService {
 
   @Override
   @Transactional
+  @CacheEvict(value = "routes", allEntries = true)
   public void delete(Long id) {
     // todo: soft-delete
     transportationRepository.deleteById(id);

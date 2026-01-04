@@ -16,6 +16,7 @@ import com.flight.routes.dto.route.RouteResponse;
 import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.RouteService;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,7 @@ public class RouteServiceImplV3 implements RouteService {
   }
 
   @Override
+  @Cacheable(value = "routes", key = "{#originId, #destinationId, #date}")
   public List<RouteResponse> calculateRoutes(Long originId, Long destinationId, LocalDate date) {
     if (originId == null || destinationId == null || originId.equals(destinationId)) {
       return List.of();
