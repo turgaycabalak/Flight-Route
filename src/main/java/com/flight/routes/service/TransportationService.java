@@ -1,5 +1,6 @@
 package com.flight.routes.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Transportation;
@@ -22,4 +23,6 @@ public interface TransportationService {
   Transportation getById(Long id);
 
   Page<Transportation> findAll(Pageable pageable);
+
+  List<Transportation> getTransportations(Long originId, Long destinationId, Integer operatingDay);
 }

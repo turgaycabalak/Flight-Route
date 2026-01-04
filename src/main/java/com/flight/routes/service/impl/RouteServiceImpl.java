@@ -9,23 +9,26 @@ import com.flight.routes.domain.entity.Transportation;
 import com.flight.routes.domain.enums.TransportationTypeEnum;
 import com.flight.routes.dto.route.RouteLegResponse;
 import com.flight.routes.dto.route.RouteResponse;
+import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
 import com.flight.routes.service.RouteService;
 import com.flight.routes.service.TransportationService;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Service("v1")
 @Transactional(readOnly = true)
 public class RouteServiceImpl implements RouteService {
   private final LocationService locationService;
   private final TransportationService transportationService;
+  private final TransportationRepository transportationRepository;
 
-  public RouteServiceImpl(LocationService locationService, TransportationService transportationService) {
+  public RouteServiceImpl(LocationService locationService, TransportationService transportationService,
+                          TransportationRepository transportationRepository) {
     this.locationService = locationService;
     this.transportationService = transportationService;
+    this.transportationRepository = transportationRepository;
   }
 
 
@@ -52,21 +55,22 @@ public class RouteServiceImpl implements RouteService {
    */
   @Override
   public List<RouteResponse> calculateRoutes(Long originId, Long destinationId, LocalDate date) {
-    Location origin = locationService.getById(originId);
-    Location destination = locationService.getById(destinationId);
-
-    if (origin.getId().equals(destination.getId())) {
+    if (originId == null || destinationId == null || originId.equals(destinationId)) {
       return List.of();
     }
 
+    Location origin = locationService.getById(originId);
+    Location destination = locationService.getById(destinationId);
     //List<Transportation> allTransportations = transportationService.findAll(Pageable.unpaged()).getContent();
+    List<Transportation> allTransportations =
+        transportationRepository.findAllOperatingOnDay(date.getDayOfWeek().getValue());
 
     List<RouteResponse> routes = new ArrayList<>();
 
-    routes.addAll(findDirectFlights(origin, destination, date));
-    routes.addAll(findBeforeFlightRoutes(origin, destination, date));
-    routes.addAll(findFlightAfterRoutes(origin, destination, date));
-    routes.addAll(findBeforeFlightAfterRoutes(origin, destination, date));
+    routes.addAll(findDirectFlights(origin, destination, date, allTransportations));
+    routes.addAll(findBeforeFlightRoutes(origin, destination, date, allTransportations));
+    routes.addAll(findFlightAfterRoutes(origin, destination, date, allTransportations));
+    routes.addAll(findBeforeFlightAfterRoutes(origin, destination, date, allTransportations));
 
     return routes;
   }
@@ -75,12 +79,11 @@ public class RouteServiceImpl implements RouteService {
   /// origin -> destination (FLIGHT) /////////////////////////
   private List<RouteResponse> findDirectFlights(Location origin,
                                                 Location destination,
-                                                LocalDate date) {
+                                                LocalDate date,
+                                                List<Transportation> allTransportations) {
 
     // there should be only one flight between origin and destination.
-    return transportationService.findAll(Pageable.unpaged())
-        .getContent()
-        .stream()
+    return allTransportations.stream()
         .filter(t -> t.getTransportationType() == TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getOrigin().getId().equals(origin.getId()))
         .filter(t -> t.getDestination().getId().equals(destination.getId()))
@@ -105,20 +108,17 @@ public class RouteServiceImpl implements RouteService {
   /// X -> destination (FLIGHT) /////////////////////////
   private List<RouteResponse> findBeforeFlightRoutes(Location origin,
                                                      Location destination,
-                                                     LocalDate date) {
-
-    List<Transportation> all = transportationService.findAll(Pageable.unpaged())
-        .getContent();
-
+                                                     LocalDate date,
+                                                     List<Transportation> allTransportations) {
     // 1 BEFORE candidates
-    List<Transportation> beforeTransfers = all.stream()
+    List<Transportation> beforeTransfers = allTransportations.stream()
         .filter(t -> t.getTransportationType() != TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getOrigin().getId().equals(origin.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
         .toList();
 
     // 2 FLIGHT candidates
-    List<Transportation> flights = all.stream()
+    List<Transportation> flights = allTransportations.stream()
         .filter(t -> t.getTransportationType() == TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getDestination().getId().equals(destination.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
@@ -162,21 +162,17 @@ public class RouteServiceImpl implements RouteService {
   /// X -> destination (NON_FLIGHT) /////////////////////////
   private List<RouteResponse> findFlightAfterRoutes(Location origin,
                                                     Location destination,
-                                                    LocalDate date) {
-
-    List<Transportation> all = transportationService
-        .findAll(Pageable.unpaged())
-        .getContent();
-
+                                                    LocalDate date,
+                                                    List<Transportation> allTransportations) {
     // 1 FLIGHT candidates
-    List<Transportation> flights = all.stream()
+    List<Transportation> flights = allTransportations.stream()
         .filter(t -> t.getTransportationType() == TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getOrigin().getId().equals(origin.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
         .toList();
 
     // 2 AFTER candidates
-    List<Transportation> afterTransfers = all.stream()
+    List<Transportation> afterTransfers = allTransportations.stream()
         .filter(t -> t.getTransportationType() != TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getDestination().getId().equals(destination.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
@@ -222,27 +218,23 @@ public class RouteServiceImpl implements RouteService {
   /// Y -> destination (NON_FLIGHT) /////////////////////////
   private List<RouteResponse> findBeforeFlightAfterRoutes(Location origin,
                                                           Location destination,
-                                                          LocalDate date) {
-
-    List<Transportation> all = transportationService
-        .findAll(Pageable.unpaged())
-        .getContent();
-
+                                                          LocalDate date,
+                                                          List<Transportation> allTransportations) {
     // 1 BEFORE
-    List<Transportation> befores = all.stream()
+    List<Transportation> befores = allTransportations.stream()
         .filter(t -> t.getTransportationType() != TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getOrigin().getId().equals(origin.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
         .toList();
 
     // 2 FLIGHT
-    List<Transportation> flights = all.stream()
+    List<Transportation> flights = allTransportations.stream()
         .filter(t -> t.getTransportationType() == TransportationTypeEnum.FLIGHT)
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))
         .toList();
 
     // 3 AFTER
-    List<Transportation> afters = all.stream()
+    List<Transportation> afters = allTransportations.stream()
         .filter(t -> t.getTransportationType() != TransportationTypeEnum.FLIGHT)
         .filter(t -> t.getDestination().getId().equals(destination.getId()))
         .filter(t -> t.operatesOn(date.getDayOfWeek().getValue()))

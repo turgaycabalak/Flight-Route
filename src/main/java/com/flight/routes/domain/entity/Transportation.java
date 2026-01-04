@@ -14,6 +14,7 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -26,6 +27,10 @@ import org.apache.commons.lang3.ObjectUtils;
 @Entity
 @Table(
     name = "transportations",
+    indexes = {
+        @Index(name = "idx_origin_day", columnList = "origin_location_id"),
+        @Index(name = "idx_dest_day", columnList = "destination_location_id")
+    },
     uniqueConstraints = {
         @UniqueConstraint(
             name = "uk_transportation_unique_route",

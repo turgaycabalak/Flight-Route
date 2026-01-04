@@ -1,5 +1,6 @@
 package com.flight.routes.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.flight.routes.domain.entity.Location;
@@ -105,5 +106,11 @@ public class TransportationServiceImpl implements TransportationService {
   @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
   public Page<Transportation> findAll(Pageable pageable) {
     return transportationRepository.findAll(pageable);
+  }
+
+  @Override
+  @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+  public List<Transportation> getTransportations(Long originId, Long destinationId, Integer operatingDay) {
+    return transportationRepository.getTransportations(originId, destinationId, operatingDay);
   }
 }

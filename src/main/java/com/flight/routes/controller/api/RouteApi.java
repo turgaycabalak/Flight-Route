@@ -15,8 +15,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Tag(name = "Route API", description = "Route endpoints")
 public interface RouteApi {
 
-  @GetMapping
+  @GetMapping("/v1")
   List<RouteResponse> getRoutes(@RequestParam("originId") Long originId,
                                 @RequestParam("destinationId") Long destinationId,
                                 @RequestParam(value = "date", required = false) LocalDate date);
+
+  @GetMapping("/v2")
+  List<RouteResponse> getRoutesV2(@RequestParam("originId") Long originId,
+                                  @RequestParam("destinationId") Long destinationId,
+                                  @RequestParam(value = "date", required = false) LocalDate date);
+
+  @GetMapping("/v3")
+  List<RouteResponse> getRoutesV3(@RequestParam("originId") Long originId,
+                                  @RequestParam("destinationId") Long destinationId,
+                                  @RequestParam(value = "date", required = false) LocalDate date);
 }
