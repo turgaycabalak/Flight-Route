@@ -27,6 +27,14 @@ public interface TransportationRepository extends JpaRepository<Transportation, 
                                                                     TransportationTypeEnum transportationType,
                                                                     Long id);
 
+  @Query("""
+          SELECT count(t) > 0
+          FROM Transportation t
+          WHERE t.origin.id = :locationId
+             OR t.destination.id = :locationId
+      """)
+  boolean existsByLocation(@Param("locationId") Long locationId);
+
 
   /// -- V1 -- //////////////////////////
   @Query("""

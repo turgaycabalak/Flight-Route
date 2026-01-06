@@ -7,6 +7,7 @@ import com.flight.routes.dto.location.LocationOperationRequest;
 import com.flight.routes.exception.BusinessException;
 import com.flight.routes.exception.NotFoundException;
 import com.flight.routes.repository.LocationRepository;
+import com.flight.routes.repository.TransportationRepository;
 import com.flight.routes.service.LocationService;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -19,9 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class LocationServiceImpl implements LocationService {
   private final LocationRepository locationRepository;
+  private final TransportationRepository transportationRepository;
 
-  public LocationServiceImpl(LocationRepository locationRepository) {
+  public LocationServiceImpl(LocationRepository locationRepository, TransportationRepository transportationRepository) {
     this.locationRepository = locationRepository;
+    this.transportationRepository = transportationRepository;
   }
 
   @Override
@@ -54,6 +57,11 @@ public class LocationServiceImpl implements LocationService {
   @Transactional
   @CacheEvict(value = "routes", allEntries = true)
   public void delete(Long id) {
+    boolean isUsed = transportationRepository.existsByLocation(id);
+    if (isUsed) {
+      throw new BusinessException("error.location.used", id);
+    }
+
     // todo: soft-delete
     locationRepository.deleteById(id);
   }
