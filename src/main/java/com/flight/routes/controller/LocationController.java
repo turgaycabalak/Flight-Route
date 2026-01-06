@@ -6,6 +6,7 @@ import com.flight.routes.dto.location.LocationOperationRequest;
 import com.flight.routes.dto.location.LocationResponse;
 import com.flight.routes.mapper.LocationMapper;
 import com.flight.routes.service.LocationService;
+import com.flight.routes.util.LocationSortMapper;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +51,8 @@ public class LocationController implements LocationApi {
 
   @Override
   public Page<LocationResponse> getAll(Pageable pageable) {
-    Page<Location> page = locationService.findAll(pageable);
+    Pageable pageabled = LocationSortMapper.mapPageable(pageable);
+    Page<Location> page = locationService.findAll(pageabled);
     return page.map(LocationMapper.INSTANCE::toResponse);
   }
 }
