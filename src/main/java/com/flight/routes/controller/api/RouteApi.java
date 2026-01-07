@@ -7,6 +7,7 @@ import com.flight.routes.dto.route.RouteResponse;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,5 +29,6 @@ public interface RouteApi {
   @GetMapping("/v3")
   List<RouteResponse> getRoutesV3(@RequestParam("originId") Long originId,
                                   @RequestParam("destinationId") Long destinationId,
-                                  @RequestParam(value = "date", required = false) LocalDate date);
+                                  @RequestParam(value = "date", required = false)
+                                  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date);
 }
