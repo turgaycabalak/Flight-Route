@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "e92cd525-0bf9-4455-9289-c2e159722638",
+		"name": "Flight Route",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17742242"
+	},
+	"item": [
+		{
+			"name": "Transportation",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"originLocationId\": 3,\r\n    \"destinationLocationId\": 4,\r\n    \"transportationType\": \"BUS\",\r\n    \"operatingDays\": [\r\n        1,\r\n        2,\r\n        3,\r\n        4,\r\n        5,\r\n        6,\r\n        7\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/transportations",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"transportations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transportationType\": \"FLIGHT\",\r\n    \"operatingDays\": [\r\n        1,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/transportations/2",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"transportations",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transportationType\": \"FLIGHT\",\r\n    \"operatingDays\": [\r\n        1,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/transportations/2",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"transportations",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll pageable",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"transportationType\": \"FLIGHT\",\r\n    \"operatingDays\": [\r\n        1,\r\n        2,\r\n        3\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/transportations?page=0&size=10&sort=id,asc",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"transportations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "id,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9096/api/transportations/4",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"transportations",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Location",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Istanbul Airport\",\r\n    \"country\": \"Turkey\",\r\n    \"city\": \"Istanbul\",\r\n    \"locationCode\": \"IST\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/locations",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"aaaa\",\r\n    \"country\": \"Turkey\",\r\n    \"city\": \"Istanbul\",\r\n    \"locationCode\": \"IST\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:9096/api/locations/4",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"locations",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get by id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9096/api/locations/4",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"locations",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9096/api/locations/1",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"locations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll pageable",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9096/api/locations?page=0&size=10&sort=id,asc",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "sort",
+									"value": "id,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Route",
+			"item": [
+				{
+					"name": "get routes",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:9096/api/routes/v3?originId=4&destinationId=3&date=2024-01-04",
+							"host": [
+								"localhost"
+							],
+							"port": "9096",
+							"path": [
+								"api",
+								"routes",
+								"v3"
+							],
+							"query": [
+								{
+									"key": "originId",
+									"value": "4"
+								},
+								{
+									"key": "destinationId",
+									"value": "3"
+								},
+								{
+									"key": "date",
+									"value": "2024-01-04"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

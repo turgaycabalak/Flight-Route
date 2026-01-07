@@ -62,3 +62,12 @@ To search for valid routes including the **date validation** (Operating Days che
 **Example Request:**
 ```http
 GET /api/routes/v3?originId=1&destinationId=5&date=2025-03-12
+```
+
+## 📮 Postman Collection
+
+For easy testing, a Postman collection containing sample requests is included in the project.
+
+1.  Locate the file `Flight_Route_Service.postman_collection.json` in the project root directory.
+2.  Import the file into Postman.
+3.  The collection includes pre-configured requests for creating locations, transportations, and searching for routes.
